@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using webapi.Controllers.Entidades;
 using webApi.controllers.Entidades;
 
 namespace webapi
@@ -10,5 +11,6 @@ namespace webapi
         }
 
         public DbSet<AutorBase> Autores { get; set; }
+        public DbSet<Libro> Libros { get; set; }
     }
 }
