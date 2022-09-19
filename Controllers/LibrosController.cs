@@ -18,7 +18,8 @@ namespace webapi.Controllers
         [HttpGet("{id:int}")]   //Encerrando entre llaves podemos usar parametros de ruta
         public async Task<ActionResult<Libro>> Get(int id)
         {
-            return await context.Libros.Include(x => x.Autor).FirstOrDefaultAsync(x => x.Id == id);     //Firstorder me permite traer el primer registro que concida con la condicion.
+            return await context.Libros.Include(x => x.Autor).FirstOrDefaultAsync(x => x.Id == id);    
+            //Firstorder me permite traer el primer registro que concida con la condicion.
         }
 
         [HttpPost]
