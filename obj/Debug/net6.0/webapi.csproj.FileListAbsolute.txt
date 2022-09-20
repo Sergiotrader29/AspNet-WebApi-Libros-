@@ -77,3 +77,5 @@ C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\Microsoft.Extensions.Dep
 C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\Microsoft.Web.Infrastructure.dll
 C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\pc\source\repos\webapi\webapi\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -48,7 +48,7 @@ namespace webApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIAutores", Version = "v1" });
             });
 
-          //  services.AddAutoMapper(typeof(Startup));
+           services.AddAutoMapper(typeof(Startup));
    
         }            
         
