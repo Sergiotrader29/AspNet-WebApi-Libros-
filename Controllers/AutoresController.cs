@@ -74,12 +74,8 @@ namespace WebApiAutores.controllers
         }
 
         [HttpPut("{id:int}")] // api/autores/algo
-        public async    Task<ActionResult> Put(AutorBase autor, int id)
+        public async    Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)
         {
-            if (autor.Id != id)
-            {
-                return BadRequest("El id del autor no coincide con el id de la Url"); //badrequest es un error 400
-            }
 
             var existe = await context.Autores.AnyAsync(x => x.Id == id); //busca en la lista y anysync significa en algun lado
 
@@ -88,9 +84,13 @@ namespace WebApiAutores.controllers
                 return NotFound();   
 
             }
+
+            var autor = mapper.Map<AutorBase>(autorCreacionDTO);
+            autor.Id = id;
+
             context.Update(autor);
             await context.SaveChangesAsync();
-            return Ok();
+            return NoContent(); //Retornar un 204
         }
 
         [HttpDelete("{id:int}")] // api/autores/algo
