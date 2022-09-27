@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapi.Controllers.Entidades;
+using webapi.DTOs;
+using WebAPIAutores.DTOs;
 
 namespace webapi.Controllers
 {
@@ -9,34 +12,66 @@ namespace webapi.Controllers
     public class LibrosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
 
-        public LibrosController(ApplicationDbContext context)   //creo uun construtor de la instancia dbcontext y lo inicializamos como un campo
+        public LibrosController(ApplicationDbContext context, IMapper mapper )   //creo uun construtor de la instancia dbcontext y lo inicializamos como un campo
 
         {
             this.context = context;
+            this.mapper = mapper;
         }
-        [HttpGet("{id:int}")]   //Encerrando entre llaves podemos usar parametros de ruta
-        public async Task<ActionResult<Libro>> Get(int id)
+        [HttpGet("{id:int}", Name = "ObtenerLibro")]   
+        public async Task<ActionResult<LibroDTOConAutores>> Get(int id)
         {
-            return await context.Libros.Include(x => x.Autor).FirstOrDefaultAsync(x => x.Id == id);    
-            //Firstorder me permite traer el primer registro que concida con la condicion.
+            var libro = await context.Libros
+             .Include(libroDB => libroDB.AutoresLibros)
+             .ThenInclude(autorLibroDB => autorLibroDB.Autor)
+             .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (libro == null)
+            {
+                return NotFound();
+            }
+
+            libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList();
+
+            return mapper.Map<LibroDTOConAutores>(libro);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Libro libro)
+        public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
         {
-            //primero quiero confirmar que el autor si exista
-            var existerAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId); //primero hacemos el query
-
-            if (!existerAutor)
+            if (libroCreacionDTO.AutoresIds == null)
             {
-                return BadRequest($"no existe el autori de ID: {libro.AutorId}"); //luego hacemos la verificacion
+                return BadRequest("No se puede crear un libro sin autores");
             }
 
-            context.Add(libro); //si si existe el autor entonces añadir
+            var autoresIds = await context.Autores // ve a la tabla de autores y haz un query con Where donde id del autor se encuentre con autoresId y luego en vez de traer todos los datos solo traeme el id con (select)   
+                .Where(autorBD => libroCreacionDTO.AutoresIds.Contains(autorBD.Id)).Select(x => x.Id).ToListAsync();
+
+            if (libroCreacionDTO.AutoresIds.Count != autoresIds.Count) // compara cuantos autores hay y si no esta da error
+            {
+                return BadRequest("No existe uno de los autores enviados");
+            }
+
+            var libro = mapper.Map<Libro>(libroCreacionDTO);
+            
+            if (libro.AutoresLibros != null)
+            {
+                for (int i= 0; i<libro.AutoresLibros.Count; i++)
+                {
+                    libro.AutoresLibros[i].Orden = i;
+                }
+            }
+
+            context.Add(libro);
             await context.SaveChangesAsync();
-            return Ok();
+
+            var libroDTO = mapper.Map<LibroDTO>(libro);
+
+            return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
         }
+
 
     }
 }

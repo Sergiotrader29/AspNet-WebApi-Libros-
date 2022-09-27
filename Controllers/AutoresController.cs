@@ -4,6 +4,7 @@ using webapi;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using webapi.DTOs;
+using WebAPIAutores.DTOs;
 
 namespace WebApiAutores.controllers
 {
@@ -21,12 +22,36 @@ namespace WebApiAutores.controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AutorBase>>> Get()
+        public async Task<ActionResult<List<AutorDTO>>> Get()
         {
-            return await context.Autores.Include(x => x.Libros).ToListAsync();
+            var autores = await context.Autores.ToListAsync();
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
-        [HttpPost]
+        [HttpGet("{id:int}", Name = "obtenerAutor")]
+        public async Task<ActionResult<AutorDTOConLibros>> Get(int id)
+        {
+            var autor = await context.Autores
+                .Include(autorDB => autorDB.AutoresLibros)
+                .ThenInclude(autorLibroDB => autorLibroDB.Libro)
+                .FirstOrDefaultAsync(autorBD => autorBD.Id == id);
+
+            if (autor == null)
+            {
+                return NotFound();
+            }
+
+            return mapper.Map<AutorDTOConLibros>(autor);
+        }
+
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromRoute] string nombre)
+        {
+            var autores = await context.Autores.Where(autorBD => autorBD.Name.Contains(nombre)).ToListAsync();
+
+            return mapper.Map<List<AutorDTO>>(autores); //colocamos esto para no exponer nuestras entidades 
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
@@ -41,11 +66,11 @@ namespace WebApiAutores.controllers
 
             context.Add(autor);
             await context.SaveChangesAsync();
-            return Ok();
+            
 
-           // var autorDTO = mapper.Map<AutorDTO>(autor);
+            var autorDTO = mapper.Map<AutorDTO>(autor);
 
-           // return CreatedAtRoute("obtenerAutor", new { id = autor.Id }, autorDTO);
+            return CreatedAtRoute("obtenerAutor", new { id = autor.Id }, autorDTO);
         }
 
         [HttpPut("{id:int}")] // api/autores/algo
