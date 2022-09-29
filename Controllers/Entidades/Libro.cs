@@ -11,6 +11,8 @@ namespace webapi.Controllers.Entidades
         [StringLength(maximumLength: 20, ErrorMessage = "El campo {0} no debe tener más de {1} carácteres")]
         [FirstLetterMayusAtribute]
         public string Titulo { get; set; }
+
+        public DateTime? FechaPublicacion  { get; set; } // el signo de interrogacion quiere decir qu elo voy NULABOL que pueda ser nulo.
         public List<Comentario> Comentarios { get; set; } //me permite hacer joins de manera sencilla
         public List<AutorLibro> AutoresLibros { get; set; } //me permite hacer joins de manera sencilla
 

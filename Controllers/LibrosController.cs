@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Mvc.Async;
 using webapi.Controllers.Entidades;
 using webapi.DTOs;
 using WebAPIAutores.DTOs;
@@ -55,14 +56,8 @@ namespace webapi.Controllers
             }
 
             var libro = mapper.Map<Libro>(libroCreacionDTO);
-            
-            if (libro.AutoresLibros != null)
-            {
-                for (int i= 0; i<libro.AutoresLibros.Count; i++)
-                {
-                    libro.AutoresLibros[i].Orden = i;
-                }
-            }
+
+            AsignarOrdenAutores(libro);
 
             context.Add(libro);
             await context.SaveChangesAsync();
@@ -72,6 +67,35 @@ namespace webapi.Controllers
             return CreatedAtRoute("ObtenerLibro", new { id = libro.Id }, libroDTO);
         }
 
+        [HttpPut("{id:int}")] // api/autores/algo
+        public async Task<ActionResult> Put(int id, LibroCreacionDTO libroCreacionDTO)
+        {
+            var libroDB = await context.Libros
+                .Include(x => x.AutoresLibros)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
+            if (libroDB == null)
+            {
+                return NotFound();
+            }
+
+            libroDB = mapper.Map(libroCreacionDTO, libroDB);
+            // llevar las propiedades de libreaciondto a librodb , este me permite tener la misma instancia.
+            AsignarOrdenAutores(libroDB);
+
+            await context.SaveChangesAsync();
+            return NoContent(); 
+        }
+
+        private void AsignarOrdenAutores(Libro libro)
+        {
+            if (libro.AutoresLibros != null)
+            {
+                for (int i = 0; i < libro.AutoresLibros.Count; i++)
+                {
+                    libro.AutoresLibros[i].Orden = i;
+                }
+            }
+        }
     }
 }
