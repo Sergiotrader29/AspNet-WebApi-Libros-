@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Web.Mvc.Async;
 using webapi.Controllers.Entidades;
 using webapi.DTOs;
+using webApi.controllers.Entidades;
 using WebAPIAutores.DTOs;
 
 namespace webapi.Controllers
@@ -96,6 +98,54 @@ namespace webapi.Controllers
                     libro.AutoresLibros[i].Orden = i;
                 }
             }
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult> Patch(int id, JsonPatchDocument<LibropatchDTO> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var libroDB = await context.Libros.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (libroDB == null)
+            {
+                return NotFound();
+            }
+
+            var libroDTO = mapper.Map<LibropatchDTO>(libroDB); 
+
+            patchDocument.ApplyTo(libroDTO, ModelState); //aqui cogemos errores con el modelstate
+
+            var esValido = TryValidateModel(libroDTO);
+
+            if (!esValido)
+            {
+                return BadRequest(ModelState);
+            }
+
+            mapper.Map(libroDTO, libroDB);
+
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")] 
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existe = await context.Libros.AnyAsync(x => x.Id == id);
+
+            if (!existe)
+            {
+                return NotFound();
+
+            }
+
+            context.Remove(new Libro() { Id = id });
+            await context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

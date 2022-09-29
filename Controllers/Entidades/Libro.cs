@@ -16,5 +16,5 @@ namespace webapi.Controllers.Entidades
         public List<Comentario> Comentarios { get; set; } //me permite hacer joins de manera sencilla
         public List<AutorLibro> AutoresLibros { get; set; } //me permite hacer joins de manera sencilla
 
-    }
+    } 
 }

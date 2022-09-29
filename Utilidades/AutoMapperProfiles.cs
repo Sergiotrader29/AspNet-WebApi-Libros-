@@ -11,17 +11,16 @@ namespace webapi.Utilidades
         public AutoMapperProfiles() ///este es el contructor de la clase
         {
             CreateMap<AutorCreacionDTO, AutorBase>();
-            CreateMap<AutorBase, AutorDTO>(); // El origen va a hacer Autorbase y el destino AutorDTO
+            CreateMap<AutorBase, AutorDTO>();
             CreateMap<AutorBase, AutorDTOConLibros>()
-            .ForMember(autorDTO => autorDTO.Libros, opciones => opciones.MapFrom(MapAutorDTOLibros));
+                .ForMember(autorDTO => autorDTO.Libros, opciones => opciones.MapFrom(MapAutorDTOLibros));
 
             CreateMap<LibroCreacionDTO, Libro>()
-              .ForMember(libro => libro.AutoresLibros, opciones => opciones.MapFrom(MapAutoresLibros));
-
-            CreateMap<Libro, LibroDTO>();
-                 CreateMap<Libro, LibroDTOConAutores>()
-            .ForMember(LibroDTO => LibroDTO.Autores, opciones => opciones.MapFrom(MapLibroDTOAutores));
-
+                .ForMember(libro => libro.AutoresLibros, opciones => opciones.MapFrom(MapAutoresLibros));
+            CreateMap<Libro, LibroDTO>().ReverseMap();
+            CreateMap<Libro, LibroDTOConAutores>()
+                .ForMember(libroDTO => libroDTO.Autores, opciones => opciones.MapFrom(MapLibroDTOAutores));
+            CreateMap<LibropatchDTO, Libro>().ReverseMap(); // cuando tengo dos mapper
 
             CreateMap<ComentarioCreacionDto, Comentario>();
             CreateMap<Comentario, ComentarioDTO>();
