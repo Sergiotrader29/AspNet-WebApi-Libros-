@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using System.Web.Helpers;
 using webapi.DTOs;
+
 
 namespace webapi.Controllers
 {
@@ -12,18 +14,21 @@ namespace webapi.Controllers
     [ApiController]
     [Route("api/cuentas")]
 
-    public class CuentasController
+    public class CuentasController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration,
+            SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
+            this.signInManager = signInManager;
         }
 
-        [HttpPost("registrar")] //api/cuentas/registrar
+        [HttpPost("registrar")] // api/cuentas/registrar
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
         {
             var usuario = new IdentityUser
@@ -31,41 +36,56 @@ namespace webapi.Controllers
                 UserName = credencialesUsuario.Email,
                 Email = credencialesUsuario.Email
             };
-
             var resultado = await userManager.CreateAsync(usuario, credencialesUsuario.Password);
 
-            if(resultado.Succeeded)
+            if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                return  ConstruirToken(credencialesUsuario);
             }
             else
             {
                 return BadRequest(resultado.Errors);
             }
         }
-    }
 
-    private RespuestaAutenticacion ConstruirToken(CredencialesUsuario credencialesUsuario)
-    {
-        var claims = new List<Claim>() // es informacion acerca del usuario confiable
+        [HttpPost("login")]
+        public async Task<ActionResult<RespuestaAutenticacion>> Login(CredencialesUsuario credencialesUsuario)
         {
-            new Claim("email", credencialesUsuario.Email) // el campo email va a tener un valor asignado que es credenciales
+            var resultado = await signInManager.PasswordSignInAsync(credencialesUsuario.Email,
+                credencialesUsuario.Password, isPersistent: false, lockoutOnFailure: false); // lokout con eso evita bloquear al usuario.
 
-        };
+            if (resultado.Succeeded)
+            {
+                return  ConstruirToken(credencialesUsuario);
+            }
+            else
+            {
+                return BadRequest("Login incorrecto");
+            }
+        }
 
-        var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["LLavejwt"]));
-        var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
 
-        var expiracion = DateTime.UtcNow.AddYears(1);
-
-        var securityToken = new JwtSecurityToken(issuer: null, audience: null, claims: claims,
-            expires: expiracion, signingCredentials: creds);
-
-        return new RespuestaAutenticacion()
+        private RespuestaAutenticacion ConstruirToken(CredencialesUsuario credencialesUsuario)
         {
-            Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
-            Expiracion = expiracion
-        };
-    }
+            var claims = new List<Claim>()
+            {
+                new Claim("email", credencialesUsuario.Email),
+                new Claim("lo que yo quiera", "cualquier otro valor")
+            };
 
+            var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
+            var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
+
+            var expiracion = DateTime.UtcNow.AddYears(1);
+
+            var securityToken = new JwtSecurityToken(issuer: null, audience: null, claims: claims,
+                expires: expiracion, signingCredentials: creds);
+
+            return new RespuestaAutenticacion()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
+                Expiracion = expiracion
+            };
+        }
+    }
  }
