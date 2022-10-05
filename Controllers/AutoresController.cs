@@ -18,7 +18,7 @@ namespace WebApiAutores.controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper; // esto significa que es inicializado como un campo. 
 
-        public AutoresController(ApplicationDbContext context, IMapper mapper)s
+        public AutoresController(ApplicationDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
