@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapi.Controllers.Entidades;
@@ -13,11 +16,13 @@ namespace webapi.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public ComentariosController(ApplicationDbContext context,IMapper mapper)
+        public ComentariosController(ApplicationDbContext context,IMapper mapper, UserManager<IdentityUser> userManager)
         {
             this.context = context;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         [HttpGet]
@@ -51,8 +56,14 @@ namespace webapi.Controllers
 
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Post(int libroId, ComentarioCreacionDto comentarioCreacionDto )
         {
+            //busco el email con la funcion where y ponga la funcion . y el firorsdefault, ojo organizar mapeo en startup
+            var emailclaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+            var email = emailclaim.Value;
+            var usuario = await userManager.FindByEmailAsync(email); // primero inyectar independencia arriba de usermanager
+            var usuarioId = usuario.Id; // me devuelve el id de el de arriba
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
 
             if(!existeLibro)
@@ -62,6 +73,8 @@ namespace webapi.Controllers
 
             var comentario = mapper.Map<Comentario>(comentarioCreacionDto);
             comentario.LibroId = libroId;
+            comentario.UsuarioId = usuarioId;
+
             context.Add(comentario);
             await context.SaveChangesAsync();
             var comentarioDTO = mapper.Map<ComentarioDTO>(comentario);

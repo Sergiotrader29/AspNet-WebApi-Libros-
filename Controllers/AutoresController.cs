@@ -5,23 +5,27 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using webapi.DTOs;
 using WebAPIAutores.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WebApiAutores.controllers
 {
     [ApiController]
     [Route("api/autores")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")]
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper; // esto significa que es inicializado como un campo. 
 
-        public AutoresController(ApplicationDbContext context, IMapper mapper)
+        public AutoresController(ApplicationDbContext context, IMapper mapper)s
         {
             this.context = context;
             this.mapper = mapper;
         }
 
         [HttpGet]
+        
         public async Task<ActionResult<List<AutorDTO>>> Get()
         {
             var autores = await context.Autores.ToListAsync();
