@@ -42,7 +42,7 @@ namespace webapi.Controllers
 
             if (resultado.Succeeded)
             {
-                return  ConstruirToken(credencialesUsuario);
+                return  await ConstruirToken(credencialesUsuario);
             }
             else
             {
@@ -58,16 +58,16 @@ namespace webapi.Controllers
 
             if (resultado.Succeeded)
             {
-                return  ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario);
             }
             else
             {
-                return BadRequest("Login incorrecto");
+                return  BadRequest("Login incorrecto");
             }
         }
         [HttpGet("RenovarToken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult<RespuestaAutenticacion> Renovar()
+        public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
         {
             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
             var email = emailClaim.Value;
@@ -76,16 +76,21 @@ namespace webapi.Controllers
                 Email = email
             };
 
-            return  ConstruirToken(credencialesUsuario);
+            return await ConstruirToken(credencialesUsuario);
         }
 
-        private RespuestaAutenticacion ConstruirToken(CredencialesUsuario credencialesUsuario)
+        private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario)
         {
             var claims = new List<Claim>()
             {
                 new Claim("email", credencialesUsuario.Email),
                 new Claim("lo que yo quiera", "cualquier otro valor")
             };
+
+            var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
+            var claimsDB = await userManager.GetClaimsAsync(usuario);
+
+            claims.AddRange(claimsDB);
 
             var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
             var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
@@ -101,5 +106,21 @@ namespace webapi.Controllers
                 Expiracion = expiracion
             };
         }
+
+        [HttpPost("HacerAdmin")]
+        public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1")); //este se guarga en base de datos
+            return NoContent();
+        }
+
+        [HttpPost("RemoverAdmin")]
+        public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.RemoveClaimAsync(usuario, new Claim("esAdmin", "1")); //este se guarga en base de datos
+            return NoContent();
+        }
     }
- }
+}

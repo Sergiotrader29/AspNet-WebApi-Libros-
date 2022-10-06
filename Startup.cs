@@ -102,6 +102,15 @@ namespace webApi
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin")); //POLITICA CLAIM ADMINISTRADOR
             });
 
+         
+
+            services.AddCors(opciones =>
+            {
+                opciones.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("https://www.apirequest.io").AllowAnyMethod().AllowAnyHeader();
+                });
+            });
         }            
         
 
@@ -118,6 +127,7 @@ namespace webApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthorization();
 
