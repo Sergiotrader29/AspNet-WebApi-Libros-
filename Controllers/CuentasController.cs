@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Web.Helpers;
 using webapi.DTOs;
+using webapi.servicios;
 
 
 namespace webapi.Controllers
@@ -21,13 +23,63 @@ namespace webapi.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly HashService hashService;
+        private readonly IDataProtector dataProtector;
 
         public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,HashService hashService, IDataProtectionProvider dataProtectionProvider)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
+            this.hashService = hashService;
+            dataProtector = dataProtectionProvider.CreateProtector("valor_unico_y_secreto"); //llave de algoritmo de escriptacion
+        }
+
+        [HttpGet("hash/{textoPlano}")]
+        public ActionResult RealizarHash(string textoPlano)
+        {
+            var resultado1 = hashService.Hash(textoPlano);
+            var resultado2 = hashService.Hash(textoPlano);
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                Hash1 = resultado1,
+                Hash2 = resultado2
+            });
+        }
+
+        [HttpGet("encriptar")]
+        public ActionResult Encriptar()
+        {
+            var textoPlano = "Felipe Gavilán";
+            var textoCifrado = dataProtector.Protect(textoPlano);
+            var textoDesencriptado = dataProtector.Unprotect(textoCifrado);
+
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                textoCifrado = textoCifrado,
+                textoDesencriptado = textoDesencriptado
+            });
+        }
+
+        [HttpGet("encriptarPorTiempo")]
+        public ActionResult EncriptarPorTiempo()
+        {
+            var protectorLimitadoPorTiempo = dataProtector.ToTimeLimitedDataProtector();
+
+            var textoPlano = "Felipe Gavilán";
+            var textoCifrado = protectorLimitadoPorTiempo.Protect(textoPlano, lifetime: TimeSpan.FromSeconds(5));
+            Thread.Sleep(6000); //PARALIZAR POR 6 SEGUNDOS
+            var textoDesencriptado = protectorLimitadoPorTiempo.Unprotect(textoCifrado);
+
+            return Ok(new
+            {
+                textoPlano = textoPlano,
+                textoCifrado = textoCifrado,
+                textoDesencriptado = textoDesencriptado
+            });
         }
 
         [HttpPost("registrar")] // api/cuentas/registrar

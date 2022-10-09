@@ -20,6 +20,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using webapi;
+using webapi.servicios;
 using WebAPIAutores.Filtros;
 
 namespace webApi
@@ -99,10 +100,12 @@ namespace webApi
 
             services.AddAuthorization(opciones =>
             {
-                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin")); //POLITICA CLAIM ADMINISTRADOR
+                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
+                //POLITICA CLAIM ADMINISTRADOR
             });
 
-         
+            services.AddDataProtection();
+            services.AddTransient<HashService>();// este servicio no guarda estados
 
             services.AddCors(opciones =>
             {
