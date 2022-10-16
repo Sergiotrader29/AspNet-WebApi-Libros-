@@ -12,7 +12,7 @@ namespace webapi.Controllers
     [ApiController] //siempre vamos a heredar esto en un controller
     [Route("api")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class RootController
+    public class RootController : ControllerBase
     {
         private readonly IAuthorizationService authorizationService;
 

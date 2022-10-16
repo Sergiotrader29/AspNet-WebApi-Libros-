@@ -7,6 +7,8 @@ using webapi.DTOs;
 using WebAPIAutores.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using webapi.Utilidades;
+using WebAPIAutores.Utilidades;
 
 namespace WebApiAutores.controllers
 {
@@ -17,23 +19,28 @@ namespace WebApiAutores.controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper; // esto significa que es inicializado como un campo. 
+        private readonly IAuthorizationService authorizationService;
 
-        public AutoresController(ApplicationDbContext context, IMapper mapper)
+        public AutoresController(ApplicationDbContext context, IMapper mapper, IAuthorizationService authorizationService)
         {
             this.context = context;
             this.mapper = mapper;
+            this.authorizationService = authorizationService;
         }
 
         [HttpGet(Name = "obtenerautores")]
-        
+
         public async Task<ActionResult<List<AutorDTO>>> Get()
         {
             var autores = await context.Autores.ToListAsync();
             return mapper.Map<List<AutorDTO>>(autores);
         }
 
+
         [HttpGet("{id:int}", Name = "obtenerAutor")]
-        public async Task<ActionResult<AutorDTOConLibros>> Get(int id)
+        [AllowAnonymous]
+        [ServiceFilter(typeof(HATEOASFiltroAttribute))]
+        public async Task<ActionResult<AutorDTOConLibros>> Get(int id, [FromHeader] string incluirHATEOAS)
         {
             var autor = await context.Autores
                 .Include(autorDB => autorDB.AutoresLibros)
@@ -45,7 +52,8 @@ namespace WebApiAutores.controllers
                 return NotFound();
             }
 
-            return mapper.Map<AutorDTOConLibros>(autor);
+            var dto = mapper.Map<AutorDTOConLibros>(autor);
+            return dto;
         }
 
         [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
