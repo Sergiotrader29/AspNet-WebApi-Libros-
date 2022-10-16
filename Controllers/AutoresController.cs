@@ -24,7 +24,7 @@ namespace WebApiAutores.controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "obtenerautores")]
         
         public async Task<ActionResult<List<AutorDTO>>> Get()
         {
@@ -48,7 +48,7 @@ namespace WebApiAutores.controllers
             return mapper.Map<AutorDTOConLibros>(autor);
         }
 
-        [HttpGet("{nombre}")]
+        [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")]
         public async Task<ActionResult<List<AutorDTO>>> Get([FromRoute] string nombre)
         {
             var autores = await context.Autores.Where(autorBD => autorBD.Name.Contains(nombre)).ToListAsync();
@@ -56,7 +56,7 @@ namespace WebApiAutores.controllers
             return mapper.Map<List<AutorDTO>>(autores); //colocamos esto para no exponer nuestras entidades 
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearAutor")]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
             var existeAutorConElMismoNombre = await context.Autores.AnyAsync(x => x.Name == autorCreacionDTO.Name);
@@ -77,7 +77,7 @@ namespace WebApiAutores.controllers
             return CreatedAtRoute("obtenerAutor", new { id = autor.Id }, autorDTO);
         }
 
-        [HttpPut("{id:int}")] // api/autores/algo
+        [HttpPut("{id:int}", Name = "actualizarAutor")] // api/autores/algo
         public async    Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)
         {
 
@@ -97,7 +97,7 @@ namespace WebApiAutores.controllers
             return NoContent(); //Retornar un 204
         }
 
-        [HttpDelete("{id:int}")] // api/autores/algo
+        [HttpDelete("{id:int}", Name = "borrarAutor")] // api/autores/algo
         public async Task<ActionResult> Delete(int id)
         {
             var existe =  await context.Autores.AnyAsync(x => x.Id == id); 

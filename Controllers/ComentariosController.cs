@@ -25,7 +25,7 @@ namespace webapi.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "obtenerComentariosLibros")]
         public async Task<ActionResult<List<ComentarioDTO>>> Get(int libroId)
         {
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
@@ -41,7 +41,7 @@ namespace webapi.Controllers
             return mapper.Map<List<ComentarioDTO>>(comentarios);
         }
 
-        [HttpGet("{id:int}", Name = "ObtenerComentario")]
+        [HttpGet("{id:int}", Name = "obtenerComentario")]
         public async Task<ActionResult<ComentarioDTO>> GetPorId(int id)
         {
             var comentario = await context.Comentarios.FirstOrDefaultAsync(comentarioDB => comentarioDB.Id == id);
@@ -55,7 +55,7 @@ namespace webapi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost(Name = "crearComentarios")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Post(int libroId, ComentarioCreacionDto comentarioCreacionDto )
         {
@@ -79,10 +79,10 @@ namespace webapi.Controllers
             await context.SaveChangesAsync();
             var comentarioDTO = mapper.Map<ComentarioDTO>(comentario);
 
-            return CreatedAtRoute("ObtenerComentario", new { id = comentario.Id, libroId = libroId }, comentarioDTO);
+            return CreatedAtRoute("obtenerComentario", new { id = comentario.Id, libroId = libroId }, comentarioDTO);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "actualizarComentarios")]
         public async Task<ActionResult> Put(int libroId, int id, ComentarioCreacionDto comentarioCreacionDTO)
         {
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
