@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using webapi.DTOs;
 using webapi.servicios;
 using WebAPIAutores.Utilidades;
+using WebAPIAutores.Servicios;
 
 namespace webapi.Utilidades
 {
@@ -36,7 +37,7 @@ namespace webapi.Utilidades
                         throw new ArgumentException("Se esperaba una instancia de AutorDTO o List<AutorDTO>");
 
                     autoresDTO.ForEach(async autor => await generadorEnlaces.GenerarEnlaces(autor));
-                    resultado.Value = autoresDTO;
+                    resultado.Value = autoresDTO; //ESTAMOS CAMBIANDO EL VALOR QUE VAMOS A DEVOLVER UN LISTADO
                 }
                 else
                 {

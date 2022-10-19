@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using webapi.DTOs;
+using WebAPIAutores.DTOs;
 
-namespace webapi.servicios
+namespace WebAPIAutores.Servicios
 {
     public class GeneradorEnlaces
     {
@@ -21,7 +28,7 @@ namespace webapi.servicios
             this.actionContextAccessor = actionContextAccessor;
         }
 
-        private IUrlHelper ConstruirURLHelper() //crear la URL
+        private IUrlHelper ConstruirURLHelper()
         {
             var factoria = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IUrlHelperFactory>();
             return factoria.GetUrlHelper(actionContextAccessor.ActionContext);
@@ -33,6 +40,7 @@ namespace webapi.servicios
             var resultado = await authorizationService.AuthorizeAsync(httpContext.User, "esAdmin");
             return resultado.Succeeded;
         }
+
 
         public async Task GenerarEnlaces(AutorDTO autorDTO)
         {
@@ -59,6 +67,5 @@ namespace webapi.servicios
 
 
         }
-
     }
 }

@@ -24,6 +24,7 @@ using webapi;
 using webapi.servicios;
 using webapi.Utilidades;
 using WebAPIAutores.Filtros;
+using WebAPIAutores.Servicios;
 
 namespace webApi
 {
@@ -44,6 +45,8 @@ namespace webApi
             services.AddControllers(opciones =>
             {
                 opciones.Filters.Add(typeof(FiltroDeExcepcion));
+                opciones.Conventions.Add(new SwaggerAgrupaPorVersion());
+
             }).AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddNewtonsoftJson();
 
@@ -65,6 +68,11 @@ namespace webApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIAutores", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebAPIAutores", Version = "v2" });
+                c.OperationFilter<AgregarParametroHATEOAS>();
+                c.OperationFilter<AgregarParametroXVersion>();
+
+                c.OperationFilter<AgregarParametroHATEOAS>();
 
                 // config swagger that aceppt JWT
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -127,14 +135,20 @@ namespace webApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "webApi v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIAutores v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebAPIAutores v2");
+                });
             }
 
-            app.UseHttpsRedirection();
+                app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors();
