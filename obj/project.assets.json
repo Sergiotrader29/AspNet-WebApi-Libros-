@@ -1162,7 +1162,7 @@
           }
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0": {
+      "Microsoft.Web.Infrastructure/2.0.0": {
         "type": "package",
         "compile": {
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
@@ -4517,15 +4517,17 @@
         "microsoft.openapi.nuspec"
       ]
     },
-    "Microsoft.Web.Infrastructure/1.0.0": {
-      "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
+    "Microsoft.Web.Infrastructure/2.0.0": {
+      "sha512": "NA6F00drSYd4HZk7QcyMRz1EEdZQQpcdnt6DfNiurNcUNsmmRDpz9db2Bc3L3Lgo455BOSwNDuNjbhDLltKGKQ==",
       "type": "package",
-      "path": "microsoft.web.infrastructure/1.0.0",
+      "path": "microsoft.web.infrastructure/2.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "NET.icon.png",
+        "NET_Library_EULA_ENU.txt",
         "lib/net40/Microsoft.Web.Infrastructure.dll",
-        "microsoft.web.infrastructure.1.0.0.nupkg.sha512",
+        "microsoft.web.infrastructure.2.0.0.nupkg.sha512",
         "microsoft.web.infrastructure.nuspec"
       ]
     },
@@ -9304,6 +9306,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.8",
       "Microsoft.Extensions.Logging.Abstractions >= 6.0.2",
+      "Microsoft.Web.Infrastructure >= 2.0.0",
       "Swashbuckle.AspNetCore >= 6.2.3"
     ]
   },
@@ -9388,6 +9391,10 @@
             "target": "Package",
             "version": "[6.0.2, )"
           },
+          "Microsoft.Web.Infrastructure": {
+            "target": "Package",
+            "version": "[2.0.0, )"
+          },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[6.2.3, )"
@@ -9451,7 +9458,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'Microsoft.Web.Infrastructure 1.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "message": "Package 'Microsoft.Web.Infrastructure 2.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
       "libraryId": "Microsoft.Web.Infrastructure",
       "targetGraphs": [
         "net6.0"
