@@ -34,11 +34,18 @@ namespace webapi.Controllers.v1
             datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("ObtenerRoot", new { }),
                 descripcion: "self", metodo: "GET"));
 
-            datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("crearAutor", new { }), descripcion: "autor-crear",
-             metodo: "POST"));
 
-            datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("crearLibro", new { }), descripcion: "libro-crear",
-                metodo: "POST"));
+            datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("obtenerAutores", new { }), descripcion: "autores",
+                metodo: "GET"));
+
+            if (esAdmin.Succeeded)
+            {
+                datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("crearAutor", new { }), descripcion: "autor-crear",
+               metodo: "POST"));
+
+                datosHateoas.Add(new DatoHATEOAS(enlace: Url.Link("crearLibro", new { }), descripcion: "libro-crear",
+                    metodo: "POST"));
+            }
 
             return datosHateoas;
         }
