@@ -10,6 +10,13 @@ C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\web
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\AutoMapper.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Castle.Core.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.ApplicationInsights.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.ApplicationInsights.AspNetCore.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.AI.DependencyCollector.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.AI.EventCounterCollector.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.AI.PerfCounterCollector.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.AI.WindowsServer.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.AI.ServerTelemetryChannel.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Web.Mvc.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Web.Razor.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Web.Helpers.dll
@@ -34,6 +41,7 @@ C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Mic
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Core.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.ApplicationInsights.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.Identity.Client.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Microsoft.IdentityModel.Logging.dll
@@ -50,6 +58,7 @@ C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Swa
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Configuration.ConfigurationManager.dll
+C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Diagnostics.PerformanceCounter.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Drawing.Common.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\pc\source\repos\webapi\webapi\obj\Release\net6.0\win-x86\PubTmp\Out\System.Runtime.Caching.dll
